@@ -169,6 +169,20 @@ async function handleGetTags(req, res) {
   }
 }
 
+// Add this new function
+async function handleGetUnpublishedBlogs(req, res) {
+  try {
+    const blogs = await Blog.find({ isPublished: false })
+      .populate('tags', 'name')
+      .sort({ createdAt: -1 })
+      .exec();
+
+    return res.status(200).json(blogs);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}
+
 module.exports = {
   handleGetBlogs,
   handleGetBlogById,
@@ -177,4 +191,5 @@ module.exports = {
   handleDeleteBlog,
   handleCreateTag,
   handleGetTags,
+  handleGetUnpublishedBlogs,
 };

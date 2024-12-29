@@ -6,7 +6,8 @@ const {
   handleUpdateBlog,
   handleDeleteBlog,
   handleGetTags,
-  handleCreateTag
+  handleCreateTag,
+  handleGetUnpublishedBlogs
 } = require('../controllers/blog');
 const { authMiddleware, adminMiddleware } = require('../middleware/auth');
 
@@ -15,6 +16,7 @@ const router = Router();
 router.get('/', handleGetBlogs);
 router.get('/tags', handleGetTags);
 router.post('/tags', authMiddleware, adminMiddleware, handleCreateTag);
+router.get('/unpublished', authMiddleware, adminMiddleware, handleGetUnpublishedBlogs);
 router.get('/:id', handleGetBlogById);
 
 // Admin routes

@@ -45,4 +45,14 @@ export const blogService = {
     });
     return response.data;
   },
+
+  updateBlogStatus: async (id: string, isPublished: boolean) => {
+    const response = await client.patch(`/blogs/${id}`, { isPublished });
+    return response.data;
+  },
+
+  getUnpublishedBlogs: async () => {
+    const response = await client.get('/blogs/unpublished');
+    return response.data;
+  },
 };

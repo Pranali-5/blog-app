@@ -10,6 +10,7 @@ import { SignIn } from './pages/auth/SignIn';
 import { SignUp } from './pages/auth/SignUp';
 import { Notifications } from '@mantine/notifications';
 import '@mantine/notifications/styles.css';
+import { UnpublishedBlogs } from './pages/admin/UnpublishedBlogs';
 
 const queryClient = new QueryClient();
 const theme = createTheme({
@@ -31,6 +32,10 @@ function App() {
               <Route path="/blog/:id" element={<BlogDetailPage />} />
                <Route path="/admin/blog/new" element={<ProtectedRoute><AdminBlogEditor /></ProtectedRoute>} />
                <Route path="/admin/blog/edit/:id" element={<ProtectedRoute><AdminBlogEditor /></ProtectedRoute>} />
+               <Route 
+                 path="/admin/blogs/unpublished" 
+                 element={<ProtectedRoute><UnpublishedBlogs /></ProtectedRoute>} 
+               />
             </Routes>
           </AppShell>
         </BrowserRouter>

@@ -20,9 +20,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </Link>
           <Group>
             {token ? (
-              <Button component={Link} to="/admin/blog/new" variant="outline">
-                Create Blog
-              </Button>
+              <Group>
+                <Button component={Link} to="/admin/blog/new" variant="outline">
+                  Create Blog
+                </Button>
+                <Button 
+                  component={Link} 
+                  to="/admin/blogs/unpublished" 
+                  variant="subtle"
+                >
+                  Unpublished Blogs
+                </Button>
+              </Group>
             ) : !isAuthPage && (
               <Group>
                 <Button component={Link} to="/admin/signin" variant="subtle">
