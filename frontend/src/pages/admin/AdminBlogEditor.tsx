@@ -1,5 +1,5 @@
 import { useForm } from '@mantine/form';
-import { Container, TextInput, Textarea, Button, MultiSelect, Stack, Switch, Loader } from '@mantine/core';
+import { Container, TextInput, Textarea, Button, MultiSelect, Stack, Loader, Switch, Box } from '@mantine/core';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { RichTextEditor, Link } from '@mantine/tiptap';
@@ -22,7 +22,7 @@ export function AdminBlogEditor() {
       excerpt: '',
       coverImageURL: '',
       tags: [] as string[],
-      isPublished: false,
+      isPublished: true,
     },
   });
 
@@ -35,7 +35,7 @@ export function AdminBlogEditor() {
   });
 
   // Fetch tags for the multiselect
-  const { data: tagsData, isLoading: isTagsLoading, isFetched: isTagsFetched, isError: isTagsError } = useQuery({
+  const { data: tagsData, isLoading: isTagsLoading, isError: isTagsError } = useQuery({
     queryKey: ['tags'],
     queryFn: async () => {
       const response = await fetch('http://localhost:8080/api/blogs/tags');
@@ -65,22 +65,24 @@ export function AdminBlogEditor() {
             });
     }
   });
-console.log('Tags:', tagsData);
+
   return (
-    <Container size="xl" w='100%'>
-      <form onSubmit={form.onSubmit((values) => createBlogMutation.mutate(values))}>
-        <Stack gap="md" w='100%'>
+    <Box w='50%' p={`lg`} m='auto'>
+      <form onSubmit={form.onSubmit((values) => createBlogMutation.mutate(values))} style={{ width: '100%' }}>
+        <Stack gap="md" w="100%">
           <TextInput
             label="Title"
             placeholder="Enter blog title"
             required
             {...form.getInputProps('title')}
+            w="100%"
           />
 
           <TextInput
             label="Cover Image URL"
             placeholder="https://example.com/image.jpg"
             {...form.getInputProps('coverImageURL')}
+            w="100%"
           />
 
           <Textarea
@@ -88,9 +90,10 @@ console.log('Tags:', tagsData);
             placeholder="Brief description of the blog"
             required
             {...form.getInputProps('content')}
+            w="100%"
           />
 
-          {isTagsFetched && <MultiSelect
+           <MultiSelect
             label="Tags"
             placeholder="Select tags"
             data={tagsData?.map((tag: any) => ({
@@ -98,16 +101,12 @@ console.log('Tags:', tagsData);
               label: tag.name,
             })) || []}
             {...form.getInputProps('tags')}
-          />}
-          {
-            isTagsLoading && <Loader type='dots' />
-          }
+            w="100%"
+          />
+          
+          {isTagsError && <div>Failed to load tags</div>}
 
-          {
-            isTagsError && <div>Failed to load tags</div>
-          }
-
-          <RichTextEditor editor={editor}>
+          {/* <RichTextEditor editor={editor}>
             <RichTextEditor.Toolbar sticky stickyOffset={60}>
               <RichTextEditor.ControlsGroup>
                 <RichTextEditor.Bold />
@@ -122,7 +121,7 @@ console.log('Tags:', tagsData);
             </RichTextEditor.Toolbar>
 
             <RichTextEditor.Content />
-          </RichTextEditor>
+          </RichTextEditor> */}
 
           <Switch
             label="Publish immediately"
@@ -130,11 +129,11 @@ console.log('Tags:', tagsData);
             mt="md"
           />
 
-          <Button type="submit">
+          <Button type="submit" w="100%">
             {isEditing ? 'Update Blog' : 'Create Blog'}
           </Button>
         </Stack>
       </form>
-    </Container>
+    </Box>
   );
 }

@@ -11,6 +11,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <MantineAppShell
       header={{ height: 60 }}
       padding="md"
+      w='100%'
     >
       <MantineAppShell.Header>
         <Group h="100%" px="md" justify="space-between" align='center' wrap='nowrap'>
