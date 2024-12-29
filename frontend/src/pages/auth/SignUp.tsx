@@ -1,9 +1,12 @@
-import { TextInput, PasswordInput, Button, Container, Title, Paper } from '@mantine/core';
+import { TextInput, PasswordInput, Button, Group, Anchor } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useMutation } from '@tanstack/react-query';
 import { authService } from '../../api/authService';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { AuthLayout } from '../../components/auth/AuthLayout';
 import React from 'react';
+import { notifications } from '@mantine/notifications';
+import { AxiosError } from 'axios';
 
 export function SignUp() {
   const navigate = useNavigate();
@@ -24,41 +27,59 @@ export function SignUp() {
     mutationFn: authService.signup,
     onSuccess: (data) => {
       localStorage.setItem('token', data.token);
+      notifications.show({
+        title: 'Success',
+        message: 'Account created successfully!',
+        color: 'green'
+      });
       navigate('/admin/blog/new');
     },
+    onError: (error: AxiosError<{message: string}>) => {
+      notifications.show({
+        title: 'Error',
+        message: error.response?.data?.message || 'Failed to create account',
+        color: 'red'
+      });
+    }
   });
 
   return (
-    <Container size={420} my={40}>
-      <Title ta="center">Create Account</Title>
-
-      <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-        <form onSubmit={form.onSubmit((values) => signupMutation.mutate(values))}>
-          <TextInput
-            label="Name"
-            placeholder="Your name"
-            required
-            {...form.getInputProps('name')}
-          />
-          <TextInput
-            label="Email"
-            placeholder="you@example.com"
-            required
-            mt="md"
-            {...form.getInputProps('email')}
-          />
-          <PasswordInput
-            label="Password"
-            placeholder="Your password"
-            required
-            mt="md"
-            {...form.getInputProps('password')}
-          />
-          <Button fullWidth mt="xl" type="submit" loading={signupMutation.isPending}>
-            Sign up
-          </Button>
-        </form>
-      </Paper>
-    </Container>
+    <AuthLayout title="Create your account">
+      <form onSubmit={form.onSubmit((values) => signupMutation.mutate(values))}>
+        <TextInput
+          label="Name"
+          placeholder="Your name"
+          required
+          {...form.getInputProps('name')}
+        />
+        <TextInput
+          label="Email"
+          placeholder="you@example.com"
+          required
+          mt="md"
+          {...form.getInputProps('email')}
+        />
+        <PasswordInput
+          label="Password"
+          placeholder="Your password"
+          required
+          mt="md"
+          {...form.getInputProps('password')}
+        />
+        <Group justify="space-between" mt="md">
+          <Anchor component={Link} to="/admin/signin" size="sm">
+            Already have an account? Login
+          </Anchor>
+        </Group>
+        <Button 
+          fullWidth 
+          mt="xl" 
+          type="submit" 
+          loading={signupMutation.isPending}
+        >
+          Create account
+        </Button>
+      </form>
+    </AuthLayout>
   );
-} 
+}

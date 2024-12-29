@@ -1,4 +1,4 @@
-import { MantineProvider } from '@mantine/core';
+import { createTheme, MantineProvider } from '@mantine/core';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AppShell } from './components/Layout/AppShell';
@@ -8,13 +8,20 @@ import { AdminBlogEditor } from './pages/admin/AdminBlogEditor';
 import {ProtectedRoute} from './components/Layout/ProtectedRoute';
 import { SignIn } from './pages/auth/SignIn';
 import { SignUp } from './pages/auth/SignUp';
+import { Notifications } from '@mantine/notifications';
+import '@mantine/notifications/styles.css';
 
 const queryClient = new QueryClient();
+const theme = createTheme({
+  primaryColor: 'blue',
+  // You can customize other theme properties here
+});
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <MantineProvider>
+      <MantineProvider theme={theme} defaultColorScheme="dark">
+        <Notifications />
         <BrowserRouter>
           <AppShell>
             <Routes>

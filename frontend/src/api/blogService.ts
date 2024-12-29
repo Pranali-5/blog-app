@@ -12,7 +12,12 @@ export const blogService = {
   },
 
   createBlog: async (blogData: any) => {
-    const response = await client.post('/blogs', blogData);
+    const token = localStorage.getItem('token');
+    const response = await client.post('/blogs', blogData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     return response.data;
   },
 

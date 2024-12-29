@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Container, Grid, Card, Image, Text, Title, Badge, Group } from '@mantine/core';
+import { Container, Grid, Card, Image, Text, Title, Badge, Group, Stack } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import React from 'react';
@@ -37,7 +37,13 @@ export function HomePage() {
               padding="lg"
               radius="md"
               withBorder
-              style={{ textDecoration: 'none', color: 'inherit' }}
+              style={{ 
+                textDecoration: 'none', 
+                color: 'inherit',
+                height: '300px',
+                display: 'flex',
+                flexDirection: 'column'
+              }}
             >
               {blog.coverImageURL && (
                 <Card.Section>
@@ -45,29 +51,36 @@ export function HomePage() {
                     src={blog.coverImageURL}
                     height={200}
                     alt={blog.title}
+                    fit="cover"
                   />
                 </Card.Section>
               )}
 
-              <Group mt="md" mb="xs">
-                <Title order={3}>{blog.title}</Title>
-              </Group>
+              <Stack style={{ flex: 1, justifyContent: 'space-between' }}>
+                <div>
+                  <Group mt="md" mb="xs">
+                    <Title order={3}>{blog.title}</Title>
+                  </Group>
 
-              <Text size="sm" c="dimmed" lineClamp={3}>
-                {blog.excerpt}
-              </Text>
+                  <Text size="sm" c="dimmed" lineClamp={3}>
+                    {blog.excerpt}
+                  </Text>
+                </div>
 
-              <Group mt="md" gap="xs">
-                {blog.tags.map(tag => (
-                  <Badge key={tag._id} variant="light">
-                    {tag.name}
-                  </Badge>
-                ))}
-              </Group>
+                <div>
+                  <Group mt="md" gap="xs">
+                    {blog.tags.map(tag => (
+                      <Badge key={tag._id} variant="light">
+                        {tag.name}
+                      </Badge>
+                    ))}
+                  </Group>
 
-              <Text size="sm" c="dimmed" mt="md">
-                {format(new Date(blog.createdAt), 'MMM dd, yyyy')}
-              </Text>
+                  <Text size="sm" c="dimmed" mt="md">
+                    {format(new Date(blog.createdAt), 'MMM dd, yyyy')}
+                  </Text>
+                </div>
+              </Stack>
             </Card>
           </Grid.Col>
         ))}

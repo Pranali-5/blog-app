@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Container, Grid, Card, Text, Title, Badge, Group, Stack } from '@mantine/core';
+import { Container, Grid, Card, Text, Title, Badge, Group, Stack, Paper } from '@mantine/core';
 import { useParams, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import React from 'react';
@@ -20,8 +20,8 @@ export function BlogDetailPage() {
   }
 
   return (
-    <Container size="lg">
-      <Grid>
+    <Container size='xxl' p={{ base: 'lg', md: 'xl' }}>
+      <Grid gutter={{ base: 'lg', md: 'xl' }}>
         {/* Main Blog Content */}
         <Grid.Col span={{ base: 12, md: 8 }}>
           <Stack>
@@ -34,13 +34,19 @@ export function BlogDetailPage() {
             </Group>
 
             <Text>{data.blog.content}</Text>
+          </Stack>
+        </Grid.Col>
 
-            {/* Recent Posts */}
-            <Title order={3} mt="xl">Recent Posts</Title>
-            <Grid>
-              {data.recentBlogs.map((blog: any) => (
-                <Grid.Col key={blog._id} span={6}>
-                  <Card 
+        {/* Sidebar with Related and Recent Posts */}
+        <Grid.Col span={{ base: 12, md: 4 }}>
+          <Stack>
+            {/* Related Posts Section */}
+            <Paper withBorder p="md" radius="md">
+              <Title order={3} mb="md">Related Posts</Title>
+              <Stack>
+                {data.relatedBlogs.map((blog: any) => (
+                  <Card
+                    key={blog._id}
                     component={Link}
                     to={`/blog/${blog._id}`}
                     padding="md"
@@ -52,31 +58,31 @@ export function BlogDetailPage() {
                       {blog.excerpt}
                     </Text>
                   </Card>
-                </Grid.Col>
-              ))}
-            </Grid>
-          </Stack>
-        </Grid.Col>
+                ))}
+              </Stack>
+            </Paper>
 
-        {/* Related Posts Sidebar */}
-        <Grid.Col span={{ base: 12, md: 4 }}>
-          <Title order={3}>Related Posts</Title>
-          <Stack mt="md">
-            {data.relatedBlogs.map((blog: any) => (
-              <Card
-                key={blog._id}
-                component={Link}
-                to={`/blog/${blog._id}`}
-                padding="md"
-                withBorder
-                style={{ textDecoration: 'none', color: 'inherit' }}
-              >
-                <Title order={4}>{blog.title}</Title>
-                <Text lineClamp={2} size="sm" c="dimmed" mt="xs">
-                  {blog.excerpt}
-                </Text>
-              </Card>
-            ))}
+            {/* Recent Posts Section */}
+            <Paper withBorder p="md" radius="md">
+              <Title order={3} mb="md">Recent Posts</Title>
+              <Stack>
+                {data.recentBlogs.map((blog: any) => (
+                  <Card
+                    key={blog._id}
+                    component={Link}
+                    to={`/blog/${blog._id}`}
+                    padding="md"
+                    withBorder
+                    style={{ textDecoration: 'none', color: 'inherit' }}
+                  >
+                    <Title order={4}>{blog.title}</Title>
+                    <Text lineClamp={2} size="sm" c="dimmed" mt="xs">
+                      {blog.excerpt}
+                    </Text>
+                  </Card>
+                ))}
+              </Stack>
+            </Paper>
           </Stack>
         </Grid.Col>
       </Grid>

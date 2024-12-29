@@ -1,11 +1,14 @@
 import { useForm } from '@mantine/form';
-import { Container, TextInput, Textarea, Button, MultiSelect, Stack } from '@mantine/core';
+import { Container, TextInput, Textarea, Button, MultiSelect, Stack, Switch, Loader } from '@mantine/core';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { RichTextEditor, Link } from '@mantine/tiptap';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import React from 'react';
+import { blogService } from '../../api/blogService';
+import { notifications } from '@mantine/notifications';
+import { AxiosError } from 'axios';
 
 export function AdminBlogEditor() {
   const { id } = useParams();
@@ -32,7 +35,7 @@ export function AdminBlogEditor() {
   });
 
   // Fetch tags for the multiselect
-  const { data: tagsData } = useQuery({
+  const { data: tagsData, isLoading: isTagsLoading, isFetched: isTagsFetched, isError: isTagsError } = useQuery({
     queryKey: ['tags'],
     queryFn: async () => {
       const response = await fetch('http://localhost:8080/api/blogs/tags');
@@ -42,25 +45,31 @@ export function AdminBlogEditor() {
 
   const createBlogMutation = useMutation({
     mutationFn: async (values: typeof form.values) => {
-      const response = await fetch('http://localhost:8080/api/blogs', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // Add your auth token here
-        },
-        body: JSON.stringify(values),
-      });
-      return response.json();
+      console.log('Token:', localStorage.getItem('token')); // Debug token
+      return blogService.createBlog(values);
     },
     onSuccess: () => {
+       notifications.show({
+              title: 'Success',
+              message: 'Blog created successfully!',
+              color: 'green'
+            });
       navigate('/');
     },
+    onError: (error: AxiosError<{message: string}> ) => {
+      console.error('Blog creation error:', error);
+      notifications.show({
+              title: 'Error',
+              message: error.response?.data?.message || 'Failed to create account',
+              color: 'red'
+            });
+    }
   });
-
+console.log('Tags:', tagsData);
   return (
-    <Container size="lg">
+    <Container size="xl" w='100%'>
       <form onSubmit={form.onSubmit((values) => createBlogMutation.mutate(values))}>
-        <Stack gap="md">
+        <Stack gap="md" w='100%'>
           <TextInput
             label="Title"
             placeholder="Enter blog title"
@@ -75,21 +84,28 @@ export function AdminBlogEditor() {
           />
 
           <Textarea
-            label="Excerpt"
+            label="Content"
             placeholder="Brief description of the blog"
             required
-            {...form.getInputProps('excerpt')}
+            {...form.getInputProps('content')}
           />
 
-          <MultiSelect
+          {isTagsFetched && <MultiSelect
             label="Tags"
             placeholder="Select tags"
-            data={tagsData?.tags?.map((tag: any) => ({
+            data={tagsData?.map((tag: any) => ({
               value: tag._id,
               label: tag.name,
             })) || []}
             {...form.getInputProps('tags')}
-          />
+          />}
+          {
+            isTagsLoading && <Loader type='dots' />
+          }
+
+          {
+            isTagsError && <div>Failed to load tags</div>
+          }
 
           <RichTextEditor editor={editor}>
             <RichTextEditor.Toolbar sticky stickyOffset={60}>
@@ -107,6 +123,12 @@ export function AdminBlogEditor() {
 
             <RichTextEditor.Content />
           </RichTextEditor>
+
+          <Switch
+            label="Publish immediately"
+            {...form.getInputProps('isPublished', { type: 'checkbox' })}
+            mt="md"
+          />
 
           <Button type="submit">
             {isEditing ? 'Update Blog' : 'Create Blog'}
