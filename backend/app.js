@@ -21,13 +21,13 @@ connectMongoDb(
 
 app.use(helmet()); // this is needed to secure the app  from some well-known web vulnerabilities by setting HTTP headers appropriately.
 
-const limiter = rateLimit({
-  max: 100,
-  windowMs: 60 * 60 * 1000, // 60 minutes,
-  message: 'Too many requests from this IP, please try again in an hour.'
-})
+// const limiter = rateLimit({
+//   max: 110,
+//   windowMs: 60 * 60 * 1000, // 60 minutes,
+//   message: 'Too many requests from this IP, please try again in an hour.'
+// })
 
-app.use('/api', limiter);
+// app.use('/api', limiter);
 
 app.use(mongoSanitize()); // this is needed to ensure that noSQL query injection is prevented. e.g. {"email": $gt: "", password: "1234"}
 app.use(xss()); // this is needed to prevent cross-site scripting attacks by sanitizing user input coming from POST body, GET queries, and url params.
