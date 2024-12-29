@@ -1,14 +1,11 @@
+import { TextInput, Textarea, Button, MultiSelect, Stack, Box, Group, Switch } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { Container, TextInput, Textarea, Button, MultiSelect, Stack, Loader, Switch, Box } from '@mantine/core';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import { RichTextEditor, Link } from '@mantine/tiptap';
-import { useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import React from 'react';
 import { blogService } from '../../api/blogService';
 import { notifications } from '@mantine/notifications';
 import { AxiosError } from 'axios';
+import React from 'react';
 
 export function AdminBlogEditor() {
   const { id } = useParams();
@@ -23,48 +20,63 @@ export function AdminBlogEditor() {
       coverImageURL: '',
       tags: [] as string[],
       isPublished: true,
+      newTag: '', // New field for tag creation
     },
   });
 
-  const editor = useEditor({
-    extensions: [StarterKit, Link],
-    content: form.values.content,
-    onUpdate: ({ editor }) => {
-      form.setFieldValue('content', editor.getHTML());
-    },
-  });
-
-  // Fetch tags for the multiselect
-  const { data: tagsData, isLoading: isTagsLoading, isError: isTagsError } = useQuery({
+  const { data: tagsData, refetch: refetchTags, isError: isTagsError } = useQuery({
     queryKey: ['tags'],
-    queryFn: async () => {
-      const response = await fetch('http://localhost:8080/api/blogs/tags');
-      return response.json();
+    queryFn: blogService.getTags,
+  });
+
+  const createTagMutation = useMutation({
+    mutationFn: async (tagName: string) => {
+      return blogService.createTag({ name: tagName });
     },
+    onSuccess: (data) => {
+      form.setFieldValue('tags', [...form.values.tags, data._id]);
+      form.setFieldValue('newTag', '');
+      refetchTags();
+      notifications.show({
+        title: 'Success',
+        message: 'Tag created successfully!',
+        color: 'green'
+      });
+    },
+    onError: (error: AxiosError<{message: string}>) => {
+      notifications.show({
+        title: 'Error',
+        message: error.response?.data?.message || 'Failed to create tag',
+        color: 'red'
+      });
+    }
   });
 
   const createBlogMutation = useMutation({
-    mutationFn: async (values: typeof form.values) => {
-      console.log('Token:', localStorage.getItem('token')); // Debug token
-      return blogService.createBlog(values);
-    },
+    mutationFn: blogService.createBlog,
     onSuccess: () => {
-       notifications.show({
-              title: 'Success',
-              message: 'Blog created successfully!',
-              color: 'green'
-            });
+      notifications.show({
+        title: 'Success',
+        message: 'Blog created successfully!',
+        color: 'green'
+      });
       navigate('/');
     },
-    onError: (error: AxiosError<{message: string}> ) => {
-      console.error('Blog creation error:', error);
+    onError: (error: AxiosError<{message: string}>) => {
       notifications.show({
-              title: 'Error',
-              message: error.response?.data?.message || 'Failed to create account',
-              color: 'red'
-            });
+        title: 'Error',
+        message: error.response?.data?.message || 'Failed to create blog',
+        color: 'red'
+      });
     }
   });
+
+  const handleCreateTag = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (form.values.newTag) {
+      createTagMutation.mutate(form.values.newTag);
+    }
+  };
 
   return (
     <Box w='50%' p={`lg`} m='auto'>
@@ -87,24 +99,33 @@ export function AdminBlogEditor() {
 
           <Textarea
             label="Content"
-            placeholder="Brief description of the blog"
+            placeholder="Blog content"
             required
             {...form.getInputProps('content')}
             w="100%"
           />
 
-           <MultiSelect
-            label="Tags"
-            placeholder="Select tags"
-            data={tagsData?.map((tag: any) => ({
-              value: tag._id,
-              label: tag.name,
-            })) || []}
-            {...form.getInputProps('tags')}
-            w="100%"
-          />
-          
-          {isTagsError && <div>Failed to load tags</div>}
+          <Group align="flex-end">
+            <MultiSelect
+              label="Tags"
+              placeholder="Select tags"
+              data={tagsData?.map((tag: any) => ({
+                value: tag._id,
+                label: tag.name,
+              })) || []}
+              {...form.getInputProps('tags')}
+              style={{ flex: 1 }}
+            />
+            <TextInput
+              placeholder="New tag name"
+              {...form.getInputProps('newTag')}
+              style={{ flex: 1 }}
+            />
+            <Button onClick={handleCreateTag} disabled={!form.values.newTag}>
+              Add Tag
+            </Button>
+          </Group>
+ {isTagsError && <div>Failed to load tags</div>}
 
           {/* <RichTextEditor editor={editor}>
             <RichTextEditor.Toolbar sticky stickyOffset={60}>

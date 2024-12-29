@@ -35,4 +35,14 @@ export const blogService = {
     const response = await client.get('/blogs/tags');
     return response.data;
   },
+
+  createTag: async (tagData: { name: string }) => {
+    const token = localStorage.getItem('token');
+    const response = await client.post('/blogs/tags', tagData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data;
+  },
 };
