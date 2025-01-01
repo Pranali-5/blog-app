@@ -3,6 +3,7 @@ import { Container, Grid, Card, Text, Title, Badge, Group, Stack, Paper, Image }
 import { useParams, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import React from 'react';
+import { API_URL, BASE_URL } from '../api/client';
 
 export function BlogDetailPage() {
   const { id } = useParams();
@@ -10,7 +11,7 @@ export function BlogDetailPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['blog', id],
     queryFn: async () => {
-      const response = await fetch(`http://localhost:8080/api/blogs/${id}`);
+      const response = await fetch(`${API_URL}/blogs/${id}`);
       return response.json();
     },
   });
@@ -26,12 +27,12 @@ export function BlogDetailPage() {
         <Grid.Col span={{ base: 12, md: 8 }}>
           <Stack>
             <Title>{data.blog.title}</Title>
-            <Image
-              src={`/upload/${data.blog.coverImageURL}`}
+            {data.blog.coverImageURL && <Image
+              src={`${BASE_URL}/public/img/${data.blog.coverImageURL}`}
               height={200}
               alt={data.blog.title}
               fit="cover"
-            />
+            />}
             <Group>
               {data.blog.tags.map((tag: any) => (
                 <Badge key={tag._id}>{tag.name}</Badge>

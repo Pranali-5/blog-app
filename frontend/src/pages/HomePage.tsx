@@ -3,6 +3,7 @@ import { Container, Grid, Card, Image, Text, Title, Badge, Group, Stack } from '
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import React from 'react';
+import { API_URL } from '../api/client';
 
 interface Blog {
   _id: string;
@@ -17,7 +18,7 @@ export function HomePage() {
   const { data, isLoading } = useQuery({
     queryKey: ['blogs'],
     queryFn: async () => {
-      const response = await fetch('http://localhost:8080/api/blogs');
+      const response = await fetch(`${API_URL}/blogs`);
       return response.json();
     },
   });

@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api';
+const API_URL = import.meta.env.VITE_API_URL as string;
+const BASE_URL = import.meta.env.VITE_BASE_URL as string;
 
 const client = axios.create({
   baseURL: API_URL,
@@ -28,4 +29,4 @@ client.interceptors.response.use(
   }
 );
 
-export { client };
+export { client, API_URL, BASE_URL };

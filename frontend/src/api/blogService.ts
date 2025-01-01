@@ -15,6 +15,7 @@ export const blogService = {
     const token = localStorage.getItem('token');
     const response = await client.post('/blogs', blogData, {
       headers: {
+        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`
       }
     });

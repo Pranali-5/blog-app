@@ -12,17 +12,17 @@ export function AdminBlogEditor() {
   const navigate = useNavigate();
   const isEditing = Boolean(id);
 
-  const form = useForm({
-    initialValues: {
-      title: '',
-      content: '',
-      excerpt: '',
-      coverImageURL: '',
-      tags: [] as string[],
-      isPublished: true,
-      newTag: '', // New field for tag creation
-    },
-  });
+const form = useForm({
+  initialValues: {
+    title: '',
+    content: '',
+    excerpt: '',
+    coverImageURL: null as File | null, // Allow File type
+    tags: [] as string[],
+    isPublished: true,
+    newTag: '',
+  },
+});
 
   const { data: tagsData, refetch: refetchTags, isError: isTagsError } = useQuery({
     queryKey: ['tags'],
@@ -53,7 +53,12 @@ export function AdminBlogEditor() {
   });
 
   const createBlogMutation = useMutation({
-    mutationFn: blogService.createBlog,
+    mutationFn: async (values: any) => {
+      if (isEditing) {
+        // return blogService.updateBlog(id, values);
+      }
+      return blogService.createBlog(values);
+    },
     onSuccess: () => {
       notifications.show({
         title: 'Success',
@@ -63,6 +68,7 @@ export function AdminBlogEditor() {
       navigate('/');
     },
     onError: (error: AxiosError<{message: string}>) => {
+      console.log('error:', error)
       notifications.show({
         title: 'Error',
         message: error.response?.data?.message || 'Failed to create blog',
@@ -91,11 +97,17 @@ export function AdminBlogEditor() {
           />
 
           <TextInput
-            label="Cover Image URL"
-            placeholder="https://example.com/image.jpg"
-            {...form.getInputProps('coverImageURL')}
-            w="100%"
-          />
+  label="Cover Image"
+  placeholder="Upload cover image"
+  type="file"
+  onChange={(event) => {
+    const file = event.currentTarget.files?.[0]; // Use optional chaining
+    if (file) {
+      form.setFieldValue('coverImageURL', file);
+    }
+  }}
+  w="100%"
+/>
 
           <Textarea
             label="Content"
