@@ -28,11 +28,11 @@ const blogSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    author: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    }
+    // author: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: 'User',
+    //   required: true,
+    // }
   },
   { timestamps: true }
 );

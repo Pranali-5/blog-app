@@ -73,12 +73,19 @@ async function handleCreateBlog(req, res) {
   try {
     const { title, content, tags } = req.body;
     
+    if (!title || !content) {
+      return res.status(400).json({ message: 'Title and content are required' });
+    }
+
     // Validate tags if provided
-    if (tags && Array.isArray(tags)) {
+    if (tags) {
+      if (!Array.isArray(tags)) {
+        return res.status(400).json({ message: 'Tags must be an array' });
+      }
       // Verify all tags exist
       const existingTags = await Tag.find({ _id: { $in: tags } });
       if (existingTags.length !== tags.length) {
-        return res.status(400).json({ message: 'tags are invalid' });
+        return res.status(400).json({ message: 'Tags are invalid' });
       }
     }
 
@@ -88,7 +95,8 @@ async function handleCreateBlog(req, res) {
       ...req.body,
       slug,
       author: req.user._id,
-      excerpt: req.body.excerpt || content.substring(0, 150) + '...'
+      excerpt: req.body.excerpt || content.substring(0, 150) + '...',
+      coverImageURL: req.file ? req.file.filename : null
     });
 
     return res.status(201).json(blog);
@@ -104,9 +112,30 @@ async function handleUpdateBlog(req, res) {
       return res.status(403).json({ message: 'Unauthorized' });
     }
 
+    const { title, tags } = req.body;
+
+    if (!Object.keys(req.body).length) {
+      return res.status(400).json({ message: 'No update fields provided' });
+    }
+
+    if (tags) {
+      if (!Array.isArray(tags)) {
+        return res.status(400).json({ message: 'Tags must be an array' });
+      }
+      const existingTags = await Tag.find({ _id: { $in: tags } });
+      if (existingTags.length !== tags.length) {
+        return res.status(400).json({ message: 'One or more tags are invalid' });
+      }
+    }
+
+    const updates = { ...req.body };
+    if (title) {
+      updates.slug = slugify(title, { lower: true });
+    }
+
     const blog = await Blog.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updates,
       { new: true }
     );
 
@@ -127,7 +156,16 @@ async function handleDeleteBlog(req, res) {
       return res.status(403).json({ message: 'Unauthorized' });
     }
 
-    const blog = await Blog.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ message: 'Blog ID is required' });
+    }
+
+    if (!require('mongoose').Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid blog ID format' });
+    }
+
+    const blog = await Blog.findByIdAndDelete(id);
 
     if (!blog) {
       return res.status(404).json({ message: 'Blog not found' });
@@ -142,6 +180,17 @@ async function handleDeleteBlog(req, res) {
 async function handleCreateTag(req, res) {
   try {
     const { name } = req.body;
+    
+    if (!name || typeof name !== 'string' || name.trim().length === 0) {
+      return res.status(400).json({ message: 'Valid tag name is required' });
+    }
+
+    // Check if tag already exists
+    const existingTag = await Tag.findOne({ name: name.trim() });
+    if (existingTag) {
+      return res.status(400).json({ message: 'Tag already exists' });
+    }
+
     const slug = slugify(name, { lower: true });
     
     const tag = await Tag.create({

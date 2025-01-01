@@ -11,6 +11,7 @@ const { connectMongoDb } = require('./connection');
 
 const blogRoute = require('./routes/blog');
 const authRoute = require('./routes/auth');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -39,7 +40,8 @@ app.use(
   }),
 );
 app.use(json());
-app.use(urlencoded({ extended: true }));
+app.use(urlencoded({ extended: false }));
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 app.use('/api/blogs', blogRoute);
 app.use('/api/auth', authRoute);
