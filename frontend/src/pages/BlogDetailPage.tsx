@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Container, Grid, Card, Text, Title, Badge, Group, Stack, Paper } from '@mantine/core';
+import { Container, Grid, Card, Text, Title, Badge, Group, Stack, Paper, Image } from '@mantine/core';
 import { useParams, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import React from 'react';
@@ -26,7 +26,12 @@ export function BlogDetailPage() {
         <Grid.Col span={{ base: 12, md: 8 }}>
           <Stack>
             <Title>{data.blog.title}</Title>
-            
+            <Image
+              src={`/upload/${data.blog.coverImageURL}`}
+              height={200}
+              alt={data.blog.title}
+              fit="cover"
+            />
             <Group>
               {data.blog.tags.map((tag: any) => (
                 <Badge key={tag._id}>{tag.name}</Badge>
