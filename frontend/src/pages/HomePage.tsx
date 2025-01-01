@@ -46,16 +46,6 @@ export function HomePage() {
                 flexDirection: 'column'
               }}
             >
-              {blog.coverImageURL && (
-                <Card.Section>
-                  <Image
-                    src={blog.coverImageURL}
-                    height={200}
-                    alt={blog.title}
-                    fit="cover"
-                  />
-                </Card.Section>
-              )}
 
               <Stack style={{ flex: 1, justifyContent: 'space-between' }}>
                 <div>

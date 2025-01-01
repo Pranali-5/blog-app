@@ -1,28 +1,48 @@
 import { TextInput, Textarea, Button, MultiSelect, Stack, Box, Group, Switch } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { blogService } from '../../api/blogService';
 import { notifications } from '@mantine/notifications';
 import { AxiosError } from 'axios';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export function AdminBlogEditor() {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditing = Boolean(id);
 
-const form = useForm({
-  initialValues: {
-    title: '',
-    content: '',
-    excerpt: '',
-    coverImageURL: null as File | null, // Allow File type
-    tags: [] as string[],
-    isPublished: true,
-    newTag: '',
-  },
-});
+  const form = useForm({
+    initialValues: {
+      title: '',
+      content: '',
+      excerpt: '',
+      coverImageURL: null as File | null,
+      tags: [] as string[],
+      isPublished: true,
+      newTag: '',
+    },
+  });
+
+  const { data: blogData, isError: isBlogError } = useQuery({
+    queryKey: ['blog', id],
+    queryFn: () => blogService.getBlogById(id!),
+    enabled: isEditing, // Only fetch if editing
+  });
+
+  useEffect(() => {
+    if (blogData) {
+      form.setValues({
+        title: blogData.blog.title,
+        content: blogData.blog.content,
+        excerpt: blogData.blog.excerpt,
+        coverImageURL: null, // Handle file upload separately
+        tags: blogData.blog.tags.map((tag: any) => tag._id),
+        isPublished: blogData.blog.isPublished,
+        newTag: '',
+      });
+    }
+  }, [blogData]);
 
   const { data: tagsData, refetch: refetchTags, isError: isTagsError } = useQuery({
     queryKey: ['tags'],
@@ -55,26 +75,25 @@ const form = useForm({
   const createBlogMutation = useMutation({
     mutationFn: async (values: any) => {
       if (isEditing) {
-        // return blogService.updateBlog(id, values);
+        return blogService.updateBlog(id!, values);
       }
       return blogService.createBlog(values);
     },
     onSuccess: () => {
       notifications.show({
         title: 'Success',
-        message: 'Blog created successfully!',
-        color: 'green'
+        message: isEditing ? 'Blog updated successfully!' : 'Blog created successfully!',
+        color: 'green',
       });
       navigate('/');
     },
-    onError: (error: AxiosError<{message: string}>) => {
-      console.log('error:', error)
+    onError: (error: AxiosError<{ message: string }>) => {
       notifications.show({
         title: 'Error',
-        message: error.response?.data?.message || 'Failed to create blog',
-        color: 'red'
+        message: error.response?.data?.message || 'Failed to save blog',
+        color: 'red',
       });
-    }
+    },
   });
 
   const handleCreateTag = (e: React.FormEvent) => {
@@ -95,20 +114,18 @@ const form = useForm({
             {...form.getInputProps('title')}
             w="100%"
           />
-
           <TextInput
-  label="Cover Image"
-  placeholder="Upload cover image"
-  type="file"
-  onChange={(event) => {
-    const file = event.currentTarget.files?.[0]; // Use optional chaining
-    if (file) {
-      form.setFieldValue('coverImageURL', file);
-    }
-  }}
-  w="100%"
-/>
-
+            label="Cover Image"
+            placeholder="Upload cover image"
+            type="file"
+            onChange={(event) => {
+              const file = event.currentTarget.files?.[0];
+              if (file) {
+                form.setFieldValue('coverImageURL', file);
+              }
+            }}
+            w="100%"
+          />
           <Textarea
             label="Content"
             placeholder="Blog content"
@@ -116,7 +133,6 @@ const form = useForm({
             {...form.getInputProps('content')}
             w="100%"
           />
-
           <Group align="flex-end">
             <MultiSelect
               label="Tags"
@@ -137,31 +153,12 @@ const form = useForm({
               Add Tag
             </Button>
           </Group>
- {isTagsError && <div>Failed to load tags</div>}
-
-          {/* <RichTextEditor editor={editor}>
-            <RichTextEditor.Toolbar sticky stickyOffset={60}>
-              <RichTextEditor.ControlsGroup>
-                <RichTextEditor.Bold />
-                <RichTextEditor.Italic />
-                <RichTextEditor.Link />
-                <RichTextEditor.Underline />
-                <RichTextEditor.H1 />
-                <RichTextEditor.H2 />
-                <RichTextEditor.BulletList />
-                <RichTextEditor.OrderedList />
-              </RichTextEditor.ControlsGroup>
-            </RichTextEditor.Toolbar>
-
-            <RichTextEditor.Content />
-          </RichTextEditor> */}
-
+          {isTagsError && <div>Failed to load tags</div>}
           <Switch
             label="Publish immediately"
             {...form.getInputProps('isPublished', { type: 'checkbox' })}
             mt="md"
           />
-
           <Button type="submit" w="100%">
             {isEditing ? 'Update Blog' : 'Create Blog'}
           </Button>

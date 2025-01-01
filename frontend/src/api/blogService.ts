@@ -23,7 +23,7 @@ export const blogService = {
   },
 
   updateBlog: async (id: string, blogData: any) => {
-    const response = await client.put(`/blogs/${id}`, blogData);
+    const response = await client.patch(`/blogs/${id}`, blogData);
     return response.data;
   },
 

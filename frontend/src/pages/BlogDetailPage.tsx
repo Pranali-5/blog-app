@@ -1,13 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
-import { Container, Grid, Card, Text, Title, Badge, Group, Stack, Paper, Image } from '@mantine/core';
-import { useParams, Link } from 'react-router-dom';
+import { Container, Grid, Card, Text, Title, Badge, Group, Stack, Paper, Image, Button } from '@mantine/core';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import React from 'react';
 import { API_URL, BASE_URL } from '../api/client';
+import { blogService } from '../api/blogService';
+import { notifications } from '@mantine/notifications';
 
 export function BlogDetailPage() {
   const { id } = useParams();
-
+  const navigate = useNavigate(); 
   const { data, isLoading } = useQuery({
     queryKey: ['blog', id],
     queryFn: async () => {
@@ -15,6 +17,26 @@ export function BlogDetailPage() {
       return response.json();
     },
   });
+
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this blog?')) {
+      try {
+        await blogService.deleteBlog(id as string);
+        notifications.show({
+          title: 'Success',
+          message: 'Blog deleted successfully!',
+          color: 'green',
+        });
+        navigate('/');
+      } catch (error) {
+        notifications.show({
+          title: 'Error',
+          message: 'Failed to delete blog',
+          color: 'red',
+        });
+      }
+    }
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -40,6 +62,14 @@ export function BlogDetailPage() {
             </Group>
 
             <Text>{data.blog.content}</Text>
+            <Group mt="md">
+              <Button component={Link} to={`/admin/blog/edit/${data.blog._id}`} variant="outline">
+                Edit Blog
+              </Button>
+              <Button variant="outline" color="red" onClick={handleDelete}>
+                Delete Blog
+              </Button>
+            </Group>
           </Stack>
         </Grid.Col>
 
@@ -47,7 +77,7 @@ export function BlogDetailPage() {
         <Grid.Col span={{ base: 12, md: 4 }}>
           <Stack>
             {/* Related Posts Section */}
-            <Paper withBorder p="md" radius="md">
+            {data.relatedBlogs.length ?  <Paper withBorder p="md" radius="md">
               <Title order={3} mb="md">Related Posts</Title>
               <Stack>
                 {data.relatedBlogs.map((blog: any) => (
@@ -66,10 +96,10 @@ export function BlogDetailPage() {
                   </Card>
                 ))}
               </Stack>
-            </Paper>
+            </Paper> : null}
 
             {/* Recent Posts Section */}
-            <Paper withBorder p="md" radius="md">
+           {data.recentBlogs ?  <Paper withBorder p="md" radius="md">
               <Title order={3} mb="md">Recent Posts</Title>
               <Stack>
                 {data.recentBlogs.map((blog: any) => (
@@ -88,7 +118,7 @@ export function BlogDetailPage() {
                   </Card>
                 ))}
               </Stack>
-            </Paper>
+            </Paper>: null}
           </Stack>
         </Grid.Col>
       </Grid>
