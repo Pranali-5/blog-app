@@ -3,7 +3,7 @@ import { useForm } from '@mantine/form';
 import { useMutation } from '@tanstack/react-query';
 import { authService } from '../../api/authService';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { AuthLayout } from '../../components/auth/AuthLayout';
+import { AuthLayout } from '../../components/Auth/AuthLayout';
 import React from 'react';
 import { notifications } from '@mantine/notifications';
 import { AxiosError } from 'axios';
