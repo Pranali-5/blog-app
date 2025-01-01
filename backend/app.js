@@ -2,10 +2,11 @@ require('dotenv').config();
 
 const express = require('express');
 const { json, urlencoded, raw } = require('body-parser');
-const rateLimit = require('express-rate-limit');
+// const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const xss = require('xss-clean');
+const cors = require('cors')
 
 const { connectMongoDb } = require('./connection');
 
@@ -33,6 +34,23 @@ app.use(helmet()); // this is needed to secure the app  from some well-known web
 app.use(mongoSanitize()); // this is needed to ensure that noSQL query injection is prevented. e.g. {"email": $gt: "", password: "1234"}
 app.use(xss()); // this is needed to prevent cross-site scripting attacks by sanitizing user input coming from POST body, GET queries, and url params.
 
+// Middleware to set CORS header
+
+// app.use((req, res, next) => {
+
+//   res.setHeader('Access-Control-Allow-Origin', '*'); // Allow requests from any origin (be cautious with this)
+
+//   next();
+
+// });
+ const corsOptions = {
+     origin: '*', // Replace with your frontend URL
+     optionsSuccessStatus: 200,
+   };
+
+app.use(cors(corsOptions))
+
+app.options('*', cors(corsOptions));
 
 app.use(
   raw({

@@ -7,6 +7,7 @@ const {
   handleDeleteBlog,
   handleGetTags,
   handleCreateTag,
+  handleGetUnpublishedBlogs,
 } = require('../controllers/blog');
 const { authMiddleware, adminMiddleware } = require('../middleware/auth');
 const multer = require('multer');
