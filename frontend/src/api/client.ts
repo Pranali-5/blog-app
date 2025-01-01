@@ -30,3 +30,11 @@ client.interceptors.response.use(
 );
 
 export { client, API_URL, BASE_URL };
+
+declare global {
+    interface ImportMeta {
+        env: {
+            [key: string]: string | undefined; // Adjust the type as necessary
+        };
+    }
+}
