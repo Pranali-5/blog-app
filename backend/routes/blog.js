@@ -53,7 +53,7 @@ const resizeUserPhoto = (req, res, next) => {
 router.get('/:id', handleGetBlogById);
 
 router.post('/', authMiddleware, adminMiddleware, upload.single('coverImageURL'),resizeUserPhoto, handleCreateBlog);
-router.patch('/:id', authMiddleware, adminMiddleware, handleUpdateBlog);
+router.put('/:id', authMiddleware, adminMiddleware,upload.single('coverImageURL'),resizeUserPhoto, handleUpdateBlog);
 router.delete('/:id', authMiddleware, adminMiddleware, handleDeleteBlog);
 
 module.exports = router;

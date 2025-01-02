@@ -23,7 +23,11 @@ export const blogService = {
   },
 
   updateBlog: async (id: string, blogData: any) => {
-    const response = await client.patch(`/blogs/${id}`, blogData);
+    const response = await client.put(`/blogs/${id}`, blogData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      }
+    });
     return response.data;
   },
 
