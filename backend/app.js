@@ -52,6 +52,12 @@ app.use(cors(corsOptions))
 
 app.options('*', cors(corsOptions));
 
+// Set Cross-Origin-Resource-Policy header
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin'); // or 'same-site'
+  next();
+});
+
 app.use(
   raw({
     type: 'application/x-www-form-urlencoded',
