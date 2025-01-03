@@ -6,8 +6,10 @@ import { blogService } from '../../api/blogService';
 import { notifications } from '@mantine/notifications';
 import { AxiosError } from 'axios';
 import React, { useEffect } from 'react';
+import { useMediaQuery } from '@mantine/hooks';
 
 export function AdminBlogEditor() {
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditing = Boolean(id);
@@ -104,7 +106,7 @@ export function AdminBlogEditor() {
   };
 
   return (
-    <Box w='50%' p={`lg`} m='auto'>
+    <Box w={isMobile ? '100%' : '50%'} p={`lg`} m='auto'>
       <form onSubmit={form.onSubmit((values) => createBlogMutation.mutate(values))} style={{ width: '100%' }}>
         <Stack gap="md" w="100%">
           <TextInput
