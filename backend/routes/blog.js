@@ -55,7 +55,7 @@ const resizeUserPhoto = async (req, res, next) => {
     Bucket: process.env.AWS_S3_BUCKET_NAME,
     Key: `public/img/${Date.now().toString()}-${req.file.originalname}`,
     Body: resizedImageBuffer,
-    ACL: 'public-read',
+    // ACL: 'public-read',
     ContentType: 'image/jpeg',
   };
 

@@ -50,7 +50,7 @@ export function BlogDetailPage() {
           <Stack>
             <Title>{data.blog.title}</Title>
             {data.blog.coverImageURL && <Image
-              src={`${BASE_URL}/public/img/${data.blog.coverImageURL}`}
+              src={`${data.blog.coverImageURL}`}
               height={200}
               alt={data.blog.title}
               fit="cover"

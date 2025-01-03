@@ -128,7 +128,7 @@ async function handleUpdateBlog(req, res) {
       }
     }
 
-    const updates = { ...req.body, ...{coverImageURL: req.file ? req.file.filename : null} };
+    const updates = { ...req.body, ...{coverImageURL: req.file ? req.file.location : null} };
     if (title) {
       updates.slug = slugify(title, { lower: true });
     }
