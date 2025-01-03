@@ -32,14 +32,14 @@ export function HomePage() {
       <Grid>
         {data?.blogs.map((blog: Blog) => (
           <Grid.Col key={blog._id} span={{ base: 12, sm: 6, md: 4 }}>
-            <Card 
-              component={Link} 
+            <Card
+              component={Link}
               to={`/blog/${blog._id}`}
               padding="lg"
               radius="md"
               withBorder
-              style={{ 
-                textDecoration: 'none', 
+              style={{
+                textDecoration: 'none',
                 color: 'inherit',
                 height: '300px',
                 display: 'flex',

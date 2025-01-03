@@ -84,7 +84,29 @@ async function handleLogin(req, res) {
   }
 }
 
+// Get current user information
+async function handleGetCurrentUser(req, res) {
+  try {
+    // The user is already set in the request by the auth middleware
+    const user = req.user;
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}
+
 module.exports = {
   handleSignup,
-  handleLogin
+  handleLogin,
+  handleGetCurrentUser
 }; 

@@ -32,7 +32,7 @@ export function SignUp() {
         message: 'Account created successfully!',
         color: 'green'
       });
-      navigate('/admin/blog/new');
+      navigate('/');
     },
     onError: (error: AxiosError<{message: string}>) => {
       notifications.show({

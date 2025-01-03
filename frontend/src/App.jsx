@@ -5,12 +5,12 @@ import { AppShell } from './components/Layout/AppShell';
 import { HomePage } from './pages/HomePage';
 import { BlogDetailPage } from './pages/BlogDetailPage';
 import { AdminBlogEditor } from './pages/admin/AdminBlogEditor';
-import {ProtectedRoute} from './components/Layout/ProtectedRoute';
 import { SignIn } from './pages/auth/SignIn';
 import { SignUp } from './pages/auth/SignUp';
 import { Notifications } from '@mantine/notifications';
 import '@mantine/notifications/styles.css';
 import { UnpublishedBlogs } from './pages/admin/UnpublishedBlogs';
+import { ProtectedRoute } from './components/Layout/ProtectedRoute';
 
 const queryClient = new QueryClient();
 const theme = createTheme({
@@ -30,11 +30,17 @@ function App() {
                 <Route path="/admin/signin" element={<SignIn />} />
                 <Route path="/admin/signup" element={<SignUp />} />
               <Route path="/blog/:id" element={<BlogDetailPage />} />
-               <Route path="/admin/blog/new" element={<ProtectedRoute><AdminBlogEditor /></ProtectedRoute>} />
-               <Route path="/admin/blog/edit/:id" element={<ProtectedRoute><AdminBlogEditor /></ProtectedRoute>} />
+               <Route 
+                 path="/admin/blog/new" 
+                 element={<ProtectedRoute requiredRole="ADMIN"><AdminBlogEditor /></ProtectedRoute>} 
+               />
+               <Route 
+                 path="/admin/blog/edit/:id" 
+                 element={<ProtectedRoute requiredRole="ADMIN"><AdminBlogEditor /></ProtectedRoute>} 
+               />
                <Route 
                  path="/admin/blogs/unpublished" 
-                 element={<ProtectedRoute><UnpublishedBlogs /></ProtectedRoute>} 
+                 element={<ProtectedRoute requiredRole="ADMIN"><UnpublishedBlogs /></ProtectedRoute>} 
                />
             </Routes>
           </AppShell>

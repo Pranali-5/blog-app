@@ -65,7 +65,7 @@ export function AdminBlogEditor() {
         color: 'green'
       });
     },
-    onError: (error: AxiosError<{message: string}>) => {
+    onError: (error: AxiosError<{ message: string }>) => {
       notifications.show({
         title: 'Error',
         message: error.response?.data?.message || 'Failed to create tag',

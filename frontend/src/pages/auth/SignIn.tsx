@@ -11,7 +11,7 @@ import { AxiosError } from 'axios';
 export function SignIn() {
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || '/admin/blog/new';
+  const from = location.state?.from?.pathname || '/';
   const form = useForm({
     initialValues: {
       email: '',
