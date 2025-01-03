@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { Group, Text, Button, Loader } from '@mantine/core';
-import { API_URL } from '../../api/client';
+import { BASE_URL } from '../../api/client';
 import { useQuery } from '@tanstack/react-query';
 
 export function ProtectedRoute({ children, requiredRole }: { children: React.ReactNode, requiredRole: string }) {
@@ -11,7 +11,7 @@ export function ProtectedRoute({ children, requiredRole }: { children: React.Rea
   const { data: roleData, isFetched } = useQuery({
     queryKey: ['currentUser'],
     queryFn: async () => {
-      const response = await fetch(`${API_URL}/auth/me`, {
+      const response = await fetch(`${BASE_URL}/api/auth/me`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

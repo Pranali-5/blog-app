@@ -1,8 +1,8 @@
 import { AppShell as MantineAppShell, Group, Button, Burger, Flex } from '@mantine/core';
-import { Link, useLocation } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import { API_URL } from '../../api/client';
+import { BASE_URL } from '../../api/client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -13,7 +13,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { data: roleData, isFetched } = useQuery({
     queryKey: ['currentUser'],
     queryFn: async () => {
-      const response = await fetch(`${API_URL}/auth/me`, {
+      const response = await fetch(`${BASE_URL}/api/auth/me`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

@@ -3,7 +3,7 @@ import { Container, Grid, Card, Image, Text, Title, Badge, Group, Stack, Loader,
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import React from 'react';
-import { API_URL } from '../api/client';
+import { BASE_URL } from '../api/client';
 import TuiLoader from '../components/Common/TuiLoader';
 
 interface Blog {
@@ -19,7 +19,7 @@ export function HomePage() {
   const { data, isLoading } = useQuery({
     queryKey: ['blogs'],
     queryFn: async () => {
-      const response = await fetch(`${API_URL}/blogs`);
+      const response = await fetch(`${BASE_URL}/api/blogs`);
       return response.json();
     },
   });

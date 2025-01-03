@@ -1,9 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { Container, Grid, Card, Text, Title, Badge, Group, Stack, Paper, Image, Button } from '@mantine/core';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { format } from 'date-fns';
-import React, { useEffect, useState } from 'react';
-import { API_URL } from '../api/client';
+import React from 'react';
+import { BASE_URL } from '../api/client';
 import { blogService } from '../api/blogService';
 import { notifications } from '@mantine/notifications';
 import TuiLoader from '../components/Common/TuiLoader';
@@ -15,7 +14,7 @@ export function BlogDetailPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['blog', id],
     queryFn: async () => {
-      const response = await fetch(`${API_URL}/blogs/${id}`);
+      const response = await fetch(`${BASE_URL}/api/blogs/${id}`);
       return response.json();
     },
   });
@@ -23,7 +22,7 @@ export function BlogDetailPage() {
   const { data: roleData, isFetched } = useQuery({
     queryKey: ['currentUser'],
     queryFn: async () => {
-      const response = await fetch(`${API_URL}/auth/me`, {
+      const response = await fetch(`${BASE_URL}/api/auth/me`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

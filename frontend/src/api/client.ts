@@ -1,10 +1,9 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL as string;
 const BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
 
 const client = axios.create({
-  baseURL: API_URL,
+  baseURL: `${BASE_URL}/api`,
   headers: {
     'Content-Type': 'application/json'
   },
@@ -29,7 +28,7 @@ client.interceptors.response.use(
   }
 );
 
-export { client, API_URL, BASE_URL };
+export { client, BASE_URL };
 
 declare global {
     interface ImportMeta {
