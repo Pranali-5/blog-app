@@ -96,7 +96,7 @@ async function handleCreateBlog(req, res) {
       slug,
       author: req.user._id,
       excerpt: req.body.excerpt || content.substring(0, 150) + '...',
-      coverImageURL: req.file ? req.file.filename : null
+      coverImageURL: req.file ? req.file.location : null
     });
 
     return res.status(201).json(blog);
