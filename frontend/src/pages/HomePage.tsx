@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { Container, Grid, Card, Image, Text, Title, Badge, Group, Stack } from '@mantine/core';
+import { Container, Grid, Card, Image, Text, Title, Badge, Group, Stack, Loader, Flex } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import React from 'react';
 import { API_URL } from '../api/client';
+import TuiLoader from '../components/Common/TuiLoader';
 
 interface Blog {
   _id: string;
@@ -24,7 +25,7 @@ export function HomePage() {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <TuiLoader />;
   }
 
   return (

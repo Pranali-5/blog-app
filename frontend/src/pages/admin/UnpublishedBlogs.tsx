@@ -4,6 +4,7 @@ import { blogService } from '../../api/blogService';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import { notifications } from '@mantine/notifications';
+import TuiLoader from '../../components/Common/TuiLoader';
 
 export function UnpublishedBlogs() {
   const queryClient = useQueryClient();
@@ -40,7 +41,7 @@ export function UnpublishedBlogs() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <TuiLoader />;
   }
 
   return (

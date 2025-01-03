@@ -31,7 +31,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     localStorage.removeItem('token'); // Remove the token from local storage
     window.location.href = '/admin/signin'; // Redirect to the sign-in page
   };
-  console.log('roleData:', roleData, isFetched)
   return (
     <MantineAppShell
       header={{ height: 60 }}
@@ -62,7 +61,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   Logout
                 </Button>
               }
-              {isFetched && !roleData.role && (
+              {!roleData?.role && !isToken && (
                 <Group>
                   <Button component={Link} to="/admin/signin" variant="subtle">
                     Sign In
@@ -104,7 +103,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </Button>
               </Flex>
             }
-            {isFetched && !roleData.role && (
+            {!roleData?.role && !isToken && (
               <Flex direction='column' align='flex-start' h='100%' mt={16} gap={16}>
                 <Button component={Link} to="/" variant="subtle" onClick={toggle}>
                   Home

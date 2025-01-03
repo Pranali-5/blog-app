@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { API_URL } from '../api/client';
 import { blogService } from '../api/blogService';
 import { notifications } from '@mantine/notifications';
+import TuiLoader from '../components/Common/TuiLoader';
 
 export function BlogDetailPage() {
   const { id } = useParams();
@@ -52,7 +53,7 @@ export function BlogDetailPage() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <TuiLoader />;
   }
 
   return (

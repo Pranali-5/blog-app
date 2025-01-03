@@ -3,6 +3,7 @@ import { Container, Grid, Card, Text, Title } from '@mantine/core';
 import { blogService } from '../api/blogService';
 import { useParams, Link } from 'react-router-dom';
 import React from 'react';
+import TuiLoader from '../components/Common/TuiLoader';
 
 export function BlogDetail() {
   const { id } = useParams();
@@ -12,7 +13,7 @@ export function BlogDetail() {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <TuiLoader />;
   }
 
   return (
@@ -21,7 +22,7 @@ export function BlogDetail() {
         <Grid.Col span={8}>
           <Title>{data?.blog.title}</Title>
           <Text mt="xl">{data?.blog.content}</Text>
-          
+
           <Title order={3} mt="xl">Recent Posts</Title>
           <Grid mt="md">
             {data?.recentBlogs.map((blog: any) => (
