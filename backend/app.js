@@ -13,6 +13,7 @@ const { connectMongoDb } = require('./connection');
 const blogRoute = require('./routes/blog');
 const authRoute = require('./routes/auth');
 const path = require('path');
+const logger = require('./middleware/logger'); // Import the logger middleware
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -66,6 +67,9 @@ app.use(
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use('/public', express.static(path.join(__dirname, 'public')));
+
+// Use the logger middleware
+app.use(logger);
 
 app.use('/api/blogs', blogRoute);
 app.use('/api/auth', authRoute);
