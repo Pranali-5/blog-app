@@ -22,7 +22,18 @@ The backend is deployed at: [Backend URL](https://blog-app-e7nf.onrender.com/api
     ```sh
     npm start
     ```
+### Environment Variables
 
+To run this project, you need to set the following environment variables with your own values:
+ ```sh
+JWT_SECRET=your_jwt_secret
+MONGO_URL=your_mongo_url
+PORT=your_port
+AWS_S3_BUCKET_NAME=your_aws_s3_bucket_name
+AWS_ACCESS_KEY_ID=your_aws_access_key_id
+AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
+AWS_REGION=your_aws_region
+  ```
 ## Frontend
 
 The frontend is deployed at: [Frontend URL](https://blog-app-1-229p.onrender.com/)
