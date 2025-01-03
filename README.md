@@ -47,7 +47,7 @@ Now, you can access the frontend at `http://localhost:5173` and the backend at `
 ## Tech Stack
 
 - **Frontend**: React, Vite, JavaScript, CSS, HTML
-- **Backend**: Node.js, Express, TypeScript
+- **Backend**: Node.js, Express
 - **Database**: MongoDB
 - **Deployment**: Render
 
