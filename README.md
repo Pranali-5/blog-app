@@ -69,6 +69,13 @@ Now, you can access the frontend at `http://localhost:5173` and the backend at `
 - **Commenting System**: Users can comment on blog posts (still in development).
 - **Responsive Design**: Mobile-friendly user interface.
 
+## App Flow
+
+Here is the app flow and API requirements:
+
+![App Flow](assets/app.flow.png)
+
+
 ## Future Improvements
 
 1. **Scalability Enhancements**
