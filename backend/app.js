@@ -7,7 +7,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const xss = require('xss-clean');
 const cors = require('cors')
-
+const status = require('express-status-monitor')
 const { connectMongoDb } = require('./connection');
 
 const blogRoute = require('./routes/blog');
@@ -73,5 +73,6 @@ app.use(logger);
 
 app.use('/api/blogs', blogRoute);
 app.use('/api/auth', authRoute);
+app.use(status())
 
 app.listen(PORT, () => console.log(`Server Started at PORT:${PORT}`));
