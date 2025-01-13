@@ -1,19 +1,29 @@
-const fs = require('fs');
+const pino = require('pino');
 const path = require('path');
+const fs = require('fs');
 
 const logFilePath = path.join(__dirname, '../logs/api_requests.log');
+const logStream = fs.createWriteStream(logFilePath, { flags: 'a' });
 
-const logger = (req, res, next) => {
-  const logEntry = `${new Date().toLocaleString('en-IN')} - ${req.ip} - ${req.method} ${req.originalUrl}\n`;
-  
-  // Append the log entry to the log file
-  fs.appendFile(logFilePath, logEntry, (err) => {
-    if (err) {
-      console.error('Failed to write to log file:', err);
-    }
-  });
+const isProduction = process.env.NODE_ENV === 'production';
+
+const logger = pino({
+  level: 'info',
+  destination: logStream, // Log to file in production
+});
+
+const logMiddleware = (req, res, next) => {
+  const logEntry = {
+    time: new Date().toISOString(),
+    ip: req.ip,
+    method: req.method,
+    url: req.originalUrl,
+  };
+
+  // Log the entry
+  logger.info(logEntry);
 
   next();
 };
 
-module.exports = logger; 
+module.exports = logMiddleware; 
