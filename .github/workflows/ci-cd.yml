@@ -1,0 +1,58 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20'
+        
+    - name: Install Backend Dependencies
+      run: |
+        cd backend
+        npm install
+        
+    - name: Run Backend Tests
+      run: |
+        cd backend
+        npm run test
+        
+    - name: Install Frontend Dependencies
+      run: |
+        cd frontend
+        yarn install
+        
+    - name: Run Frontend Tests
+      run: |
+        cd frontend
+        yarn test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          cd /home/ubuntu/blog-app
+          git pull
+          cd backend
+          npm install
+          pm2 restart all
