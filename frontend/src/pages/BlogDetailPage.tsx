@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Container, Grid, Card, Text, Title, Badge, Group, Stack, Paper, Image, Button, Breadcrumbs } from '@mantine/core';
+import { Container, Grid, Card, Text, Title, Badge, Group, Stack, Paper, Image, Button, Breadcrumbs, Flex } from '@mantine/core';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import { BASE_URL } from '../api/client';
@@ -98,8 +98,21 @@ export function BlogDetailPage() {
       <Grid gutter={{ base: 'lg', md: 'xl' }}>
         <Grid.Col span={{ base: 12, md: 8 }}>
           <Stack>
-            <Title order={2}>{data.blog.title}</Title>
-
+            <Flex align='center' justify='space-between'>
+              <Title order={2}>{data.blog.title}</Title>
+              <Group mt="md">
+                {isFetched && roleData.role === 'ADMIN' && (
+                  <>
+                    <Button component={Link} to={`/admin/blog/edit/${data.blog._id}`} variant="outline">
+                      Edit Blog
+                    </Button>
+                    <Button variant="outline" color="red" onClick={handleDelete}>
+                      Delete Blog
+                    </Button>
+                  </>
+                )}
+              </Group>
+            </Flex>
             <Group mb={16}>
               {data.blog.tags.map((tag: any) => (
                 <Badge key={tag._id} color="blue">{tag.name}</Badge>
@@ -119,18 +132,7 @@ export function BlogDetailPage() {
             <RichTextEditor editor={editor} className={classes.editor}>
               <RichTextEditor.Content />
             </RichTextEditor>
-            <Group mt="md">
-              {isFetched && roleData.role === 'ADMIN' && (
-                <>
-                  <Button component={Link} to={`/admin/blog/edit/${data.blog._id}`} variant="outline">
-                    Edit Blog
-                  </Button>
-                  <Button variant="outline" color="red" onClick={handleDelete}>
-                    Delete Blog
-                  </Button>
-                </>
-              )}
-            </Group>
+
           </Stack>
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 4 }}>
