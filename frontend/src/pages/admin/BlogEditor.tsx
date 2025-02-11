@@ -78,6 +78,7 @@ export function BlogEditor() {
   useEffect(() => {
     if (editor && isBlogFetched && isEditing) {
       editor.commands.setContent(blogData.blog.content);
+      form.setFieldValue('coverImageURL', blogData.blog.coverImageURL);
     }
   }, [editor, isBlogFetched, isEditing]);
 
@@ -85,7 +86,10 @@ export function BlogEditor() {
   const createBlogMutation = useMutation({
     mutationFn: async (values: any) => {
       if (isEditing) {
-        return blogService.updateBlog(id!, values);
+        return blogService.updateBlog(id!, {
+          ...values,
+          coverImageURL: values.coverImageURL ? values.coverImageURL : blogData.blog.coverImageURL, // Keep the existing image URL
+        });
       }
       return blogService.createBlog(values);
     },

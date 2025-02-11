@@ -128,7 +128,12 @@ async function handleUpdateBlog(req, res) {
       }
     }
 
-    const updates = { ...req.body, ...{coverImageURL: req.file ? req.file.location : null} };
+    console.log('req.body:', req.body);
+
+    const updates = { 
+      ...req.body, 
+      coverImageURL: req.body.coverImageURL ? req.body.coverImageURL : (req.file ? req.file.location : null) 
+    };
     if (title) {
       updates.slug = slugify(title, { lower: true });
     }
