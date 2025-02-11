@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import React from 'react';
 import { notifications } from '@mantine/notifications';
 import TuiLoader from '../../components/Common/TuiLoader';
+// import BlogExcerpt from '../BlogExcerpt';
 
 export function UnpublishedBlogs() {
   const queryClient = useQueryClient();
@@ -56,6 +57,7 @@ export function UnpublishedBlogs() {
                 <Text c="dimmed" size="sm" mt="xs" lineClamp={2}>
                   {blog.excerpt}
                 </Text>
+                {/* <BlogExcerpt isLoading={false} blog={blog.excerpt} /> */}
                 <Group mt="md">
                   {blog.tags.map((tag: any) => (
                     <Badge key={tag._id}>{tag.name}</Badge>

@@ -1,0 +1,27 @@
+.box {
+    /* width: 300px; */
+    /* Adjust width as needed */
+    /* height: 4.5em; */
+    /* Approx. 3 lines of text */
+    overflow: hidden;
+    display: -webkit-box;
+    /* -webkit-line-clamp: 2; */
+    /* Limits to 3 lines */
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
+    /* border: 1px solid #ccc; */
+    /* background: #f9f9f9; */
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+.editor {
+    border: none !important;
+}

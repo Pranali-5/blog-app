@@ -1,12 +1,22 @@
 import { useQuery } from '@tanstack/react-query';
 import { Container, Grid, Card, Text, Title, Badge, Group, Stack, Paper, Image, Button } from '@mantine/core';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BASE_URL } from '../api/client';
 import { blogService } from '../api/blogService';
 import { notifications } from '@mantine/notifications';
 import TuiLoader from '../components/Common/TuiLoader';
+import { Link as EditorLink } from '@mantine/tiptap';
 
+import { useEditor } from '@tiptap/react';
+import { RichTextEditor } from '@mantine/tiptap';
+import Highlight from '@tiptap/extension-highlight';
+import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline';
+import TextAlign from '@tiptap/extension-text-align';
+import Superscript from '@tiptap/extension-superscript';
+import SubScript from '@tiptap/extension-subscript';
+import classes from './BlogExcerpt.module.css';
 export function BlogDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -51,6 +61,24 @@ export function BlogDetailPage() {
     }
   };
 
+  const editor = useEditor({
+    extensions: [StarterKit,
+      Underline,
+      EditorLink,
+      Superscript,
+      SubScript,
+      Highlight,
+      TextAlign.configure({ types: ['heading', 'paragraph'] }),],
+    content: isLoading ? '' : data.blog.content, //data.blog.content
+    editable: false,
+  });
+
+  useEffect(() => {
+    if (editor && !isLoading) {
+      editor.commands.setContent(data.blog.content);
+    }
+  }, [isLoading]);
+
   if (isLoading) {
     return <TuiLoader />;
   }
@@ -61,13 +89,26 @@ export function BlogDetailPage() {
         <Grid.Col span={{ base: 12, md: 8 }}>
           <Stack>
             <Title>{data.blog.title}</Title>
-            {data.blog.coverImageURL && <Image src={`${data.blog.coverImageURL}`} height={200} alt={data.blog.title} fit="cover" />}
+            {data.blog.coverImageURL && <Image src={`${data.blog.coverImageURL}`} radius={10} alt={data.blog.title} m={'20px 0px'} style={{
+              objectFit: 'fill',
+              // borderRadius: 'md md 0px 0px', 
+              // aspectRatio: 'auto',
+              display: 'block',
+              maxwidth: '100%',
+              maxHeight: '450px',
+              width: 'auto',
+              height: 'auto',
+            }} />}
             <Group>
               {data.blog.tags.map((tag: any) => (
                 <Badge key={tag._id}>{tag.name}</Badge>
               ))}
             </Group>
-            <Text>{data.blog.content}</Text>
+            <RichTextEditor editor={editor} className={classes.editor}>
+              <RichTextEditor.Content />
+            </RichTextEditor>
+
+            {/* <EditorContent editor={editor} /> */}
             <Group mt="md">
               {isFetched && roleData.role === 'ADMIN' && (
                 <>

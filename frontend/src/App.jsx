@@ -11,6 +11,8 @@ import { Notifications } from '@mantine/notifications';
 import '@mantine/notifications/styles.css';
 import { UnpublishedBlogs } from './pages/admin/UnpublishedBlogs';
 import { ProtectedRoute } from './components/Layout/ProtectedRoute';
+import '@mantine/tiptap/styles.css';
+import { BlogEditor } from './pages/admin/BlogEditor';
 
 const queryClient = new QueryClient();
 const theme = createTheme({
@@ -32,11 +34,11 @@ function App() {
               <Route path="/blog/:id" element={<BlogDetailPage />} />
                <Route 
                  path="/admin/blog/new" 
-                 element={<ProtectedRoute requiredRole="ADMIN"><AdminBlogEditor /></ProtectedRoute>} 
+                 element={<ProtectedRoute requiredRole="ADMIN"><BlogEditor /></ProtectedRoute>} 
                />
                <Route 
                  path="/admin/blog/edit/:id" 
-                 element={<ProtectedRoute requiredRole="ADMIN"><AdminBlogEditor /></ProtectedRoute>} 
+                 element={<ProtectedRoute requiredRole="ADMIN"><BlogEditor /></ProtectedRoute>} 
                />
                <Route 
                  path="/admin/blogs/unpublished" 

@@ -57,7 +57,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </Group>
               )}
               {
-                isToken && <Button variant="outline" onClick={handleLogout}>
+                isToken && <Button variant="outline" onClick={handleLogout} ml={16}>
                   Logout
                 </Button>
               }
