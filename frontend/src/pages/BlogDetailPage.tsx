@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Container, Grid, Card, Text, Title, Badge, Group, Stack, Paper, Image, Button } from '@mantine/core';
+import { Container, Grid, Card, Text, Title, Badge, Group, Stack, Paper, Image, Button, Breadcrumbs } from '@mantine/core';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import { BASE_URL } from '../api/client';
@@ -17,6 +17,8 @@ import TextAlign from '@tiptap/extension-text-align';
 import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
 import classes from './BlogExcerpt.module.css';
+import { format } from 'date-fns';
+
 export function BlogDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -69,7 +71,7 @@ export function BlogDetailPage() {
       SubScript,
       Highlight,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),],
-    content: isLoading ? '' : data.blog.content, //data.blog.content
+    content: isLoading ? '' : data.blog.content,
     editable: false,
   });
 
@@ -85,10 +87,25 @@ export function BlogDetailPage() {
 
   return (
     <Container size='xxl' p={{ base: 'lg', md: 'xl' }}>
+      <Breadcrumbs>
+        <Link to="/">Home</Link>
+        <Text>{data.blog.title}</Text>
+      </Breadcrumbs>
+      <Text size="sm" color="dimmed" my="md">
+        {format(new Date(data.blog.createdAt), 'MMM dd, yyyy')}
+      </Text>
+
       <Grid gutter={{ base: 'lg', md: 'xl' }}>
         <Grid.Col span={{ base: 12, md: 8 }}>
           <Stack>
-            <Title>{data.blog.title}</Title>
+            <Title order={2}>{data.blog.title}</Title>
+
+            <Group mb={16}>
+              {data.blog.tags.map((tag: any) => (
+                <Badge key={tag._id} color="blue">{tag.name}</Badge>
+              ))}
+            </Group>
+
             {data.blog.coverImageURL && <Image src={`${data.blog.coverImageURL}`} radius={10} alt={data.blog.title} m={'20px 0px'} style={{
               objectFit: 'fill',
               // borderRadius: 'md md 0px 0px', 
@@ -99,16 +116,9 @@ export function BlogDetailPage() {
               width: 'auto',
               height: 'auto',
             }} />}
-            <Group>
-              {data.blog.tags.map((tag: any) => (
-                <Badge key={tag._id}>{tag.name}</Badge>
-              ))}
-            </Group>
             <RichTextEditor editor={editor} className={classes.editor}>
               <RichTextEditor.Content />
             </RichTextEditor>
-
-            {/* <EditorContent editor={editor} /> */}
             <Group mt="md">
               {isFetched && roleData.role === 'ADMIN' && (
                 <>
@@ -125,49 +135,51 @@ export function BlogDetailPage() {
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 4 }}>
           <Stack>
-            {/* Related Posts Section */}
-            {data.relatedBlogs.length ? <Paper withBorder p="md" radius="md">
-              <Title order={3} mb="md">Related Posts</Title>
-              <Stack>
-                {data.relatedBlogs.map((blog: any) => (
-                  <Card
-                    key={blog._id}
-                    component={Link}
-                    to={`/blog/${blog._id}`}
-                    padding="md"
-                    withBorder
-                    style={{ textDecoration: 'none', color: 'inherit' }}
-                  >
-                    <Title order={4}>{blog.title}</Title>
-                    <Text lineClamp={2} size="sm" c="dimmed" mt="xs">
-                      {blog.excerpt}
-                    </Text>
-                  </Card>
-                ))}
-              </Stack>
-            </Paper> : null}
+            {data.relatedBlogs.length ? (
+              <Paper withBorder p="md" radius="md">
+                <Title order={3} mb="md">Related Posts</Title>
+                <Stack>
+                  {data.relatedBlogs.map((blog: any) => (
+                    <Card
+                      key={blog._id}
+                      component={Link}
+                      to={`/blog/${blog._id}`}
+                      padding="md"
+                      withBorder
+                      style={{ textDecoration: 'none', color: 'inherit' }}
+                    >
+                      <Title order={4}>{blog.title}</Title>
+                      <Text lineClamp={2} size="sm" color="dimmed" mt="xs">
+                        {blog.excerpt}
+                      </Text>
+                    </Card>
+                  ))}
+                </Stack>
+              </Paper>
+            ) : null}
 
-            {/* Recent Posts Section */}
-            {data.recentBlogs ? <Paper withBorder p="md" radius="md">
-              <Title order={3} mb="md">Recent Posts</Title>
-              <Stack>
-                {data.recentBlogs.map((blog: any) => (
-                  <Card
-                    key={blog._id}
-                    component={Link}
-                    to={`/blog/${blog._id}`}
-                    padding="md"
-                    withBorder
-                    style={{ textDecoration: 'none', color: 'inherit' }}
-                  >
-                    <Title order={4}>{blog.title}</Title>
-                    <Text lineClamp={2} size="sm" c="dimmed" mt="xs">
-                      {blog.excerpt}
-                    </Text>
-                  </Card>
-                ))}
-              </Stack>
-            </Paper> : null}
+            {data.recentBlogs ? (
+              <Paper withBorder p="md" radius="md">
+                <Title order={3} mb="md">Recent Posts</Title>
+                <Stack>
+                  {data.recentBlogs.map((blog: any) => (
+                    <Card
+                      key={blog._id}
+                      component={Link}
+                      to={`/blog/${blog._id}`}
+                      padding="md"
+                      withBorder
+                      style={{ textDecoration: 'none', color: 'inherit' }}
+                    >
+                      <Title order={4}>{blog.title}</Title>
+                      <Text lineClamp={2} size="sm" color="dimmed" mt="xs">
+                        {blog.excerpt}
+                      </Text>
+                    </Card>
+                  ))}
+                </Stack>
+              </Paper>
+            ) : null}
           </Stack>
         </Grid.Col>
       </Grid>
