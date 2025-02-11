@@ -16,6 +16,7 @@ import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
 import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
+import { IconCalendar, IconEdit, IconTrash } from '@tabler/icons-react';
 import classes from './BlogExcerpt.module.css';
 import { format } from 'date-fns';
 
@@ -87,32 +88,36 @@ export function BlogDetailPage() {
 
   return (
     <Container size='xxl' p={{ base: 'lg', md: 'xl' }}>
-      <Breadcrumbs>
-        <Link to="/">Home</Link>
+      <Breadcrumbs mb={16}>
+        <Link to="/"><Text style={{ color: 'var(--mantine-color-blue-outline)' }}>Home</Text></Link>
         <Text>{data.blog.title}</Text>
       </Breadcrumbs>
-      <Text size="sm" color="dimmed" my="md">
-        {format(new Date(data.blog.createdAt), 'MMM dd, yyyy')}
-      </Text>
+
 
       <Grid gutter={{ base: 'lg', md: 'xl' }}>
         <Grid.Col span={{ base: 12, md: 8 }}>
           <Stack>
-            <Flex align='center' justify='space-between'>
-              <Title order={2}>{data.blog.title}</Title>
-              <Group mt="md">
-                {isFetched && roleData.role === 'ADMIN' && (
-                  <>
-                    <Button component={Link} to={`/admin/blog/edit/${data.blog._id}`} variant="outline">
-                      Edit Blog
-                    </Button>
-                    <Button variant="outline" color="red" onClick={handleDelete}>
-                      Delete Blog
-                    </Button>
-                  </>
-                )}
-              </Group>
-            </Flex>
+            <Stack>
+              <Flex align='center' justify='space-between'>
+                <Title order={2}>{data.blog.title}</Title>
+                <Group>
+                  {isFetched && roleData.role === 'ADMIN' && (
+                    <Flex align='center' gap={16}>
+                      <Link to={`/admin/blog/edit/${data.blog._id}`}>
+                        <IconEdit cursor='pointer' color='var(--mantine-color-text)' style={{ marginTop: 8 }} />
+                      </Link>
+                      <IconTrash onClick={handleDelete} cursor='pointer' />
+                    </Flex>
+                  )}
+                </Group>
+              </Flex>
+              <Flex align='center'>
+                <IconCalendar size={16} />
+                <Text size="sm" ml={8}>
+                  {format(new Date(data.blog.createdAt), 'MMM dd, yyyy')}
+                </Text>
+              </Flex>
+            </Stack>
             <Group mb={16}>
               {data.blog.tags.map((tag: any) => (
                 <Badge key={tag._id} color="blue">{tag.name}</Badge>
