@@ -19,6 +19,7 @@ import SubScript from '@tiptap/extension-subscript';
 import { IconCalendar, IconEdit, IconTrash } from '@tabler/icons-react';
 import classes from './BlogExcerpt.module.css';
 import { format } from 'date-fns';
+import BlogExcerpt from './BlogExcerpt';
 
 export function BlogDetailPage() {
   const { id } = useParams();
@@ -156,9 +157,7 @@ export function BlogDetailPage() {
                       style={{ textDecoration: 'none', color: 'inherit' }}
                     >
                       <Title order={4}>{blog.title}</Title>
-                      <Text lineClamp={2} size="sm" color="dimmed" mt="xs">
-                        {blog.excerpt}
-                      </Text>
+                      <BlogExcerpt isLoading={isLoading} blog={blog} />
                     </Card>
                   ))}
                 </Stack>
@@ -179,9 +178,7 @@ export function BlogDetailPage() {
                       style={{ textDecoration: 'none', color: 'inherit' }}
                     >
                       <Title order={4}>{blog.title}</Title>
-                      <Text lineClamp={2} size="sm" color="dimmed" mt="xs">
-                        {blog.excerpt}
-                      </Text>
+                      <BlogExcerpt isLoading={isLoading} blog={blog} />
                     </Card>
                   ))}
                 </Stack>

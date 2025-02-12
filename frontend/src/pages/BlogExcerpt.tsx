@@ -15,7 +15,7 @@ const BlogExcerpt = ({ isLoading, blog }) => {
     }, [isLoading]);
 
     return (
-        <Text>{content}</Text>
+        <Text lineClamp={2} size="sm" color="dimmed" mt="xs">{content}</Text>
     )
 }
 
