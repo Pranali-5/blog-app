@@ -1,9 +1,10 @@
 import { AppShell as MantineAppShell, Group, Button, Burger, Flex } from '@mantine/core';
 import { Link } from 'react-router-dom';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { BASE_URL } from '../../api/client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import ThemeToggle from '../ThemeToggle';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [opened, { toggle }] = useDisclosure();
@@ -45,6 +46,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
               <h2>Blog App</h2>
             </Link>
+            <Flex hiddenFrom='sm'>
+              <ThemeToggle />
+            </Flex>
             <Group ml="xl" gap={0} visibleFrom="sm">
               {isFetched && roleData.role === 'ADMIN' && (
                 <Group>
@@ -57,11 +61,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </Group>
               )}
               {
-                isToken && <Button variant="outline" onClick={handleLogout} ml={16}>
-                  Logout
-                </Button>
+                // isToken && <Button variant="outline" onClick={handleLogout} ml={16}>
+                //   Logout
+                // </Button>
               }
-              {!roleData?.role && !isToken && (
+              {/* {!roleData?.role && !isToken && (
                 <Group>
                   <Button component={Link} to="/admin/signin" variant="subtle">
                     Sign In
@@ -70,7 +74,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     Sign Up
                   </Button>
                 </Group>
-              )}
+              )} */}
+              <ThemeToggle />
             </Group>
           </Group>
         </Group>
@@ -108,12 +113,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Button component={Link} to="/" variant="subtle" onClick={toggle}>
                   Home
                 </Button>
-                <Button component={Link} to="/admin/signin" variant="subtle" onClick={toggle}>
+                {/* <Button component={Link} to="/admin/signin" variant="subtle" onClick={toggle}>
                   Sign In
                 </Button>
                 <Button component={Link} to="/admin/signup" variant="filled" onClick={toggle} ml={16}>
                   Sign Up
-                </Button>
+                </Button> */}
               </Flex>
             )}
           </Group>

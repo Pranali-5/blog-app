@@ -23,12 +23,12 @@ const theme = createTheme({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <MantineProvider theme={theme} defaultColorScheme="dark">
+      <MantineProvider defaultColorScheme="dark" theme={{ colorScheme: theme }}>
         <Notifications />
         <BrowserRouter>
           <AppShell>
             <Routes>
-              <Route path="/" element={<HomePage />} />
+              <Route path="/" element={<HomePage/>} />
                 <Route path="/admin/signin" element={<SignIn />} />
                 <Route path="/admin/signup" element={<SignUp />} />
               <Route path="/blog/:id" element={<BlogDetailPage />} />
