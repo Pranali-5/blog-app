@@ -25,3 +25,8 @@
 .editor {
     border: none !important;
 }
+
+.breadcrumbTitle {
+    text-wrap: inherit;
+    line-height: 1.5;
+}

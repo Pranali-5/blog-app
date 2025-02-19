@@ -91,7 +91,7 @@ export function BlogDetailPage() {
     <Container size='xxl' p={{ base: 'lg', md: 'xl' }}>
       <Breadcrumbs mb={16}>
         <Link to="/"><Text style={{ color: 'var(--mantine-color-blue-outline)' }}>Home</Text></Link>
-        <Text>{data.blog.title}</Text>
+        <Text className={classes.breadcrumbTitle}>{data.blog.title}</Text>
       </Breadcrumbs>
 
 
@@ -99,7 +99,7 @@ export function BlogDetailPage() {
         <Grid.Col span={{ base: 12, md: 8 }}>
           <Stack>
             <Stack>
-              <Flex align='center' justify='space-between'>
+              <Flex align='center' justify='space-between' wrap={'wrap'}>
                 <Title order={2}>{data.blog.title}</Title>
                 <Group>
                   {isFetched && roleData.role === 'ADMIN' && (
